@@ -16,6 +16,7 @@
     --teal-dark:#007878;
     --gold:#f4b942;
     --gold-soft:#fdebc4;
+    --silver:#b8c4cc;
     --white:#ffffff;
     --slate:#8fa8b3;
     --slate-dark:#5a7a8a;
@@ -42,21 +43,15 @@
   .skip-link{position:absolute; left:-999px; top:0; background:var(--gold); color:var(--navy); padding:10px 16px; font-weight:600; z-index:999;}
   .skip-link:focus{left:8px; top:8px;}
 
-  /* ============ MODE SWITCHING ============ */
   .mode{display:none;}
   .mode.active{display:block;}
 
-  /* ============================================================
-     SETUP MODE (private, host-only screen)
-     ============================================================ */
-  #mode-setup{
-    min-height:100vh;
-  }
+  /* ============================================================ SETUP MODE ============================================================ */
   .setup-topbar{
-    background:var(--navy); color:white;
-    padding:18px 26px;
+    background:var(--navy); color:white; padding:18px 26px;
     display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:14px;
     border-bottom:5px solid var(--gold);
+    position:sticky; top:0; z-index:30;
   }
   .setup-brand{display:flex; align-items:center; gap:12px;}
   .setup-brand .mark{
@@ -68,55 +63,92 @@
   .setup-brand h1{font-family:var(--display); font-size:18px; font-weight:600; margin:0;}
   .setup-brand .sub{font-family:var(--mono); font-size:10.5px; color:var(--slate); letter-spacing:0.08em; text-transform:uppercase;}
 
-  .setup-main{max-width:880px; margin:0 auto; padding:32px 24px 100px;}
-
-  .setup-head{margin-bottom:24px;}
+  .setup-main{max-width:920px; margin:0 auto; padding:32px 24px 110px;}
+  .setup-head{margin-bottom:22px;}
   .setup-head h2{font-family:var(--display); font-size:25px; color:var(--navy); margin:0 0 6px; font-weight:600;}
-  .setup-head p{margin:0; color:var(--slate-dark); font-size:14px; max-width:540px;}
+  .setup-head p{margin:0; color:var(--slate-dark); font-size:14px; max-width:560px;}
 
-  .btn{font-family:var(--body); font-weight:600; font-size:13.5px; padding:10px 18px; border-radius:7px; border:none; cursor:pointer; transition:transform 0.1s, box-shadow 0.15s;}
+  .btn{font-family:var(--body); font-weight:600; font-size:13.5px; padding:10px 18px; border-radius:7px; border:none; cursor:pointer; transition:transform 0.1s;}
   .btn:active{transform:scale(0.97);}
   .btn-gold{background:var(--gold); color:var(--navy);}
   .btn-gold:hover{background:#e8aa2e;}
   .btn-ghost{background:white; color:var(--navy); border:1.5px solid var(--line);}
   .btn-ghost:hover{border-color:var(--teal);}
-  .btn-danger{background:#fde6ee; color:#c4356f;}
-  .btn-danger:hover{background:#fad0e0;}
+  .btn-sm{padding:6px 12px; font-size:12px;}
   .btn-row{display:flex; gap:10px; flex-wrap:wrap;}
 
-  .award-card{
+  .event-title-field{
     background:white; border:1.5px solid var(--line); border-radius:12px;
-    padding:18px 20px; margin-bottom:14px;
-    display:flex; gap:16px; align-items:flex-start;
+    padding:18px 20px; margin-bottom:22px;
+  }
+  .event-title-field label{display:block; font-family:var(--mono); font-size:10px; text-transform:uppercase; letter-spacing:0.06em; color:var(--slate-dark); margin-bottom:6px;}
+  .event-title-field input{width:100%; padding:10px 12px; border-radius:7px; border:1.5px solid var(--line); font-size:18px; font-family:var(--display); background:var(--pool);}
+  .event-title-field input:focus{border-color:var(--gold); background:white;}
+
+  .round-block{
+    background:white; border:1.5px solid var(--line); border-radius:14px;
+    margin-bottom:20px; overflow:visible;
+  }
+  .round-header{
+    display:flex; align-items:center; gap:12px; padding:16px 18px;
+    background:var(--navy-soft); border-radius:14px 14px 0 0;
+    cursor:grab;
+  }
+  .round-header.dragging{opacity:0.4;}
+  .round-header input{
+    flex:1; background:transparent; border:none; color:white;
+    font-family:var(--display); font-size:17px; font-weight:600; padding:4px 2px;
+  }
+  .round-header input::placeholder{color:rgba(255,255,255,0.45);}
+  .round-header input:focus{outline:2px solid var(--gold); border-radius:4px;}
+  .round-header .drag-handle{color:rgba(255,255,255,0.4); font-family:var(--mono); font-size:13px;}
+  .round-header .round-actions{display:flex; gap:6px;}
+  .round-header .round-actions button{
+    background:rgba(255,255,255,0.08); color:#cfe3e6; border:1px solid rgba(255,255,255,0.15);
+    font-size:11.5px; padding:6px 10px; border-radius:6px;
+  }
+  .round-header .round-actions button:hover{background:rgba(255,255,255,0.16);}
+
+  .round-body{padding:16px 18px 18px;}
+
+  .award-card{
+    background:var(--pool); border:1.5px solid var(--line); border-radius:12px;
+    padding:16px 18px; margin-bottom:12px;
+    display:flex; gap:14px; align-items:flex-start;
     cursor:grab;
   }
   .award-card.dragging{opacity:0.4;}
-  .drag-handle{
-    font-family:var(--mono); color:var(--slate); font-size:13px; padding-top:8px; cursor:grab; user-select:none;
-  }
+  .drag-handle{font-family:var(--mono); color:var(--slate); font-size:13px; padding-top:8px; cursor:grab; user-select:none;}
   .award-card .fields{flex:1; display:grid; gap:10px;}
-  .award-card .field-row{display:flex; gap:10px; flex-wrap:wrap;}
-  .award-card .field{flex:1; min-width:160px;}
-  .award-card label{display:block; font-family:var(--mono); font-size:10px; text-transform:uppercase; letter-spacing:0.06em; color:var(--slate-dark); margin-bottom:4px;}
-  .award-card input, .award-card textarea{
+  .field-row{display:flex; gap:10px; flex-wrap:wrap;}
+  .field{flex:1; min-width:150px;}
+  .field label{display:block; font-family:var(--mono); font-size:10px; text-transform:uppercase; letter-spacing:0.06em; color:var(--slate-dark); margin-bottom:4px;}
+  .field input, .field textarea{
     width:100%; padding:9px 11px; border-radius:7px; border:1.5px solid var(--line);
-    font-size:14px; background:var(--pool);
+    font-size:14px; background:white;
   }
-  .award-card input:focus, .award-card textarea:focus{border-color:var(--gold); background:white;}
-  .award-card textarea{resize:vertical; min-height:38px; font-size:13.5px;}
-  .award-card .remove-btn{
-    background:none; border:none; color:var(--slate); font-size:18px; padding:4px; line-height:1; flex-shrink:0;
-  }
-  .award-card .remove-btn:hover{color:#c4356f;}
+  .field input:focus, .field textarea:focus{border-color:var(--gold);}
+  .field textarea{resize:vertical; min-height:36px; font-size:13.5px;}
+  .field.optional label::after{content:" (optional)"; text-transform:none; letter-spacing:0; color:var(--slate); font-weight:400;}
 
-  .add-award-bar{
+  .remove-btn{background:none; border:none; color:var(--slate); font-size:18px; padding:4px; line-height:1; flex-shrink:0;}
+  .remove-btn:hover{color:#c4356f;}
+
+  .add-award-inline{
+    border:2px dashed var(--line); border-radius:10px; padding:12px;
+    text-align:center; color:var(--slate-dark); font-size:13px;
+    background:white;
+  }
+  .add-award-inline:hover{border-color:var(--teal); color:var(--teal-dark);}
+
+  .add-round-bar{
     border:2px dashed var(--line); border-radius:12px; padding:18px;
     text-align:center; margin-bottom:24px; color:var(--slate-dark);
   }
 
   .setup-actions{
     position:sticky; bottom:0; background:linear-gradient(180deg, transparent, var(--pool) 30%);
-    padding:22px 0 4px; margin-top:10px;
+    padding:22px 0 4px; margin-top:10px; z-index:20;
   }
   .setup-actions-inner{
     background:var(--navy); border-radius:14px; padding:18px 22px;
@@ -130,160 +162,114 @@
     position:fixed; bottom:24px; left:50%; transform:translateX(-50%) translateY(12px);
     background:var(--navy); color:white; padding:11px 20px; border-radius:8px;
     font-size:13px; font-weight:600; box-shadow:0 10px 30px rgba(0,0,0,0.3);
-    opacity:0; transition:opacity 0.25s, transform 0.25s; z-index:200; pointer-events:none;
+    opacity:0; transition:opacity 0.25s, transform 0.25s; z-index:300; pointer-events:none;
   }
   .saved-toast.show{opacity:1; transform:translateX(-50%) translateY(0);}
 
-  .event-title-field{
-    background:white; border:1.5px solid var(--line); border-radius:12px;
-    padding:18px 20px; margin-bottom:22px;
-  }
-  .event-title-field label{display:block; font-family:var(--mono); font-size:10px; text-transform:uppercase; letter-spacing:0.06em; color:var(--slate-dark); margin-bottom:6px;}
-  .event-title-field input{width:100%; padding:10px 12px; border-radius:7px; border:1.5px solid var(--line); font-size:18px; font-family:var(--display); background:var(--pool);}
-  .event-title-field input:focus{border-color:var(--gold); background:white;}
-
-  /* ============================================================
-     PRESENTATION MODE (the room sees only this)
-     ============================================================ */
+  /* ============================================================ PRESENTATION MODE ============================================================ */
   #mode-present{
     min-height:100vh;
     background:radial-gradient(ellipse at 50% -10%, var(--navy-soft) 0%, var(--navy) 45%, var(--navy-deep) 100%);
-    color:white;
-    display:flex; flex-direction:column;
-    position:relative;
-    overflow:hidden;
+    color:white; display:flex; flex-direction:column; position:relative; overflow:hidden;
   }
 
-  .stage{
-    flex:1;
-    display:flex; flex-direction:column; align-items:center; justify-content:center;
-    padding:40px 24px;
-    position:relative;
-    z-index:2;
-  }
+  .stage{flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:40px 24px; position:relative; z-index:2;}
 
-  .program-title{
-    position:absolute; top:32px; left:0; right:0; text-align:center;
-    font-family:var(--mono); font-size:13px; letter-spacing:0.22em; text-transform:uppercase;
-    color:var(--gold); opacity:0.85; z-index:2;
-  }
+  .program-title{position:absolute; top:30px; left:0; right:0; text-align:center; font-family:var(--mono); font-size:13px; letter-spacing:0.22em; text-transform:uppercase; color:var(--gold); opacity:0.85; z-index:2;}
+  .stage-progress{position:absolute; top:62px; left:0; right:0; text-align:center; font-family:var(--mono); font-size:11px; color:var(--slate); letter-spacing:0.1em; z-index:2;}
 
-  .stage-progress{
-    position:absolute; top:64px; left:0; right:0; text-align:center;
-    font-family:var(--mono); font-size:11px; color:var(--slate); letter-spacing:0.1em; z-index:2;
-  }
+  .reveal-zone{text-align:center; max-width:920px; width:100%;}
 
-  .reveal-zone{
-    text-align:center;
-    max-width:900px;
-    width:100%;
-  }
+  .round-card{text-align:center;}
+  .round-card .rc-eyebrow{font-family:var(--mono); font-size:13px; letter-spacing:0.24em; text-transform:uppercase; color:var(--teal); margin-bottom:14px; opacity:0; transition:opacity 0.5s;}
+  .round-card .rc-eyebrow.in{opacity:1;}
+  .round-card h2{font-family:var(--display); font-weight:700; font-size:clamp(34px,7vw,68px); margin:0; opacity:0; transform:translateY(14px); transition:opacity 0.7s, transform 0.7s;}
+  .round-card h2.in{opacity:1; transform:translateY(0);}
+  .round-card .rc-line{width:120px; height:3px; background:var(--gold); margin:22px auto 0; opacity:0; transition:opacity 0.6s, width 0.6s;}
+  .round-card .rc-line.in{opacity:1; width:200px;}
 
-  .category-label{
-    font-family:var(--mono); font-size:14px; letter-spacing:0.2em; text-transform:uppercase;
-    color:var(--teal); margin:0 0 18px; opacity:0;
-    transition:opacity 0.6s ease, transform 0.6s ease;
-    transform:translateY(10px);
-  }
+  .category-label{font-family:var(--mono); font-size:14px; letter-spacing:0.2em; text-transform:uppercase; color:var(--teal); margin:0 0 16px; opacity:0; transition:opacity 0.6s ease, transform 0.6s ease; transform:translateY(10px);}
   .category-label.in{opacity:1; transform:translateY(0);}
 
-  .category-title{
-    font-family:var(--display); font-weight:700;
-    font-size:clamp(32px, 6vw, 64px);
-    line-height:1.05;
-    margin:0 0 8px;
-    opacity:0;
-    transform:translateY(16px) scale(0.97);
-    transition:opacity 0.7s cubic-bezier(.2,.8,.2,1), transform 0.7s cubic-bezier(.2,.8,.2,1);
-  }
+  .category-title{font-family:var(--display); font-weight:700; font-size:clamp(30px, 5.4vw, 58px); line-height:1.05; margin:0 0 36px; opacity:0; transform:translateY(16px) scale(0.97); transition:opacity 0.7s cubic-bezier(.2,.8,.2,1), transform 0.7s cubic-bezier(.2,.8,.2,1);}
   .category-title.in{opacity:1; transform:translateY(0) scale(1);}
 
-  .category-desc{
-    font-size:16px; color:var(--slate); margin:0 0 46px; opacity:0;
-    transition:opacity 0.6s ease;
-    max-width:560px; margin-left:auto; margin-right:auto;
-  }
-  .category-desc.in{opacity:1;}
+  .podium-zone{display:flex; align-items:flex-end; justify-content:center; gap:28px; min-height:280px; flex-wrap:wrap;}
 
-  .winner-zone{
-    min-height:160px;
-    display:flex; flex-direction:column; align-items:center; justify-content:center;
-  }
+  .podium-slot{display:flex; flex-direction:column; align-items:center; opacity:0; transform:translateY(20px); transition:opacity 0.6s cubic-bezier(.2,.8,.2,1), transform 0.6s cubic-bezier(.2,.8,.2,1);}
+  .podium-slot.in{opacity:1; transform:translateY(0);}
 
-  .winner-prompt{
-    font-family:var(--mono); font-size:12.5px; letter-spacing:0.14em; text-transform:uppercase;
-    color:var(--slate); opacity:0.7;
+  .podium-photo{
+    width:84px; height:84px; border-radius:50%; object-fit:cover; margin-bottom:14px;
+    border:3px solid var(--silver); box-shadow:0 8px 24px rgba(0,0,0,0.3);
   }
+  .podium-slot.winner-slot .podium-photo{
+    width:120px; height:120px; border-color:var(--gold); box-shadow:0 0 50px rgba(244,185,66,0.4), 0 8px 24px rgba(0,0,0,0.35);
+  }
+  .podium-photo.placeholder{ display:flex; align-items:center; justify-content:center; background:var(--navy-soft); font-family:var(--display); font-size:30px; color:var(--slate); }
 
+  .runner-up-label{font-family:var(--mono); font-size:12px; letter-spacing:0.16em; text-transform:uppercase; color:var(--silver); margin-bottom:6px;}
+  .runner-up-name{font-family:var(--display); font-size:clamp(20px,3vw,28px); font-weight:600; color:var(--silver);}
+
+  .winner-label{font-family:var(--mono); font-size:13px; letter-spacing:0.18em; text-transform:uppercase; color:var(--gold); margin-bottom:8px;}
   .winner-name{
-    font-family:var(--display); font-weight:700;
-    font-size:clamp(40px, 8vw, 84px);
-    color:var(--gold);
-    margin:0;
-    opacity:0;
-    transform:scale(0.85);
-    text-shadow:0 0 60px rgba(244,185,66,0.35);
-  }
-  .winner-name.in{
-    opacity:1; transform:scale(1);
-    transition:opacity 0.55s cubic-bezier(.2,.9,.25,1.3), transform 0.55s cubic-bezier(.2,.9,.25,1.3);
+    font-family:var(--display); font-weight:700; font-size:clamp(38px, 7vw, 76px); color:var(--gold);
+    margin:0; text-shadow:0 0 60px rgba(244,185,66,0.35); line-height:1.05;
   }
 
-  .winner-note{
-    font-size:16px; color:#cfe3e6; margin-top:14px; max-width:600px;
-    opacity:0; transition:opacity 0.6s ease 0.15s;
-  }
+  .winner-note{font-size:16px; color:#cfe3e6; margin-top:16px; max-width:600px; opacity:0; transition:opacity 0.6s ease 0.1s;}
   .winner-note.in{opacity:1;}
 
-  /* confetti burst */
-  .confetti-layer{
-    position:absolute; inset:0; pointer-events:none; z-index:1; overflow:hidden;
+  .drumroll-zone{display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:200px;}
+  .drumroll-label{font-family:var(--mono); font-size:13px; letter-spacing:0.2em; text-transform:uppercase; color:var(--slate); margin-bottom:26px;}
+  .drumroll-ring{
+    width:140px; height:140px; border-radius:50%;
+    border:3px solid rgba(244,185,66,0.3);
+    border-top-color:var(--gold);
+    margin-bottom:24px;
+    animation:drumroll-spin 1.1s linear infinite;
   }
-  .confetto{
-    position:absolute; top:-20px; border-radius:2px; opacity:0;
-  }
+  @keyframes drumroll-spin{ to{ transform:rotate(360deg); } }
+  .drumroll-dots{display:flex; gap:14px;}
+  .drumroll-dots span{ width:14px; height:14px; border-radius:50%; background:var(--gold); animation:drumroll-pulse 0.9s ease-in-out infinite; }
+  .drumroll-dots span:nth-child(2){animation-delay:0.15s;}
+  .drumroll-dots span:nth-child(3){animation-delay:0.3s;}
+  @keyframes drumroll-pulse{ 0%, 100%{transform:scale(0.6); opacity:0.4;} 50%{transform:scale(1.3); opacity:1;} }
 
-  /* host control bar */
+  .winner-prompt{font-family:var(--mono); font-size:12.5px; letter-spacing:0.14em; text-transform:uppercase; color:var(--slate); opacity:0.7;}
+
+  .confetti-layer{position:absolute; inset:0; pointer-events:none; z-index:1; overflow:hidden;}
+  .confetto{position:absolute; top:-20px; border-radius:2px; opacity:0;}
+
   .host-bar{
-    position:relative; z-index:3;
-    display:flex; align-items:center; justify-content:space-between; gap:14px; flex-wrap:wrap;
-    padding:16px 24px; background:rgba(6,13,24,0.85); backdrop-filter:blur(6px);
-    border-top:1px solid rgba(255,255,255,0.08);
+    position:relative; z-index:3; display:flex; align-items:center; justify-content:space-between; gap:14px; flex-wrap:wrap;
+    padding:16px 24px; background:rgba(6,13,24,0.85); backdrop-filter:blur(6px); border-top:1px solid rgba(255,255,255,0.08);
   }
   .host-bar .hb-left{display:flex; gap:10px; align-items:center;}
-  .host-bar button{
-    font-family:var(--mono); font-size:12px; letter-spacing:0.04em; font-weight:600;
-    padding:10px 16px; border-radius:7px; border:1.5px solid rgba(255,255,255,0.18);
-    background:rgba(255,255,255,0.04); color:#cfe3e6;
-    transition:background 0.15s, border-color 0.15s;
-  }
+  .host-bar button{font-family:var(--mono); font-size:12px; letter-spacing:0.04em; font-weight:600; padding:10px 16px; border-radius:7px; border:1.5px solid rgba(255,255,255,0.18); background:rgba(255,255,255,0.04); color:#cfe3e6; transition:background 0.15s, border-color 0.15s;}
   .host-bar button:hover{background:rgba(255,255,255,0.1); border-color:var(--teal);}
   .host-bar button.primary{background:var(--gold); color:var(--navy); border-color:var(--gold); font-weight:700;}
   .host-bar button.primary:hover{background:#e8aa2e;}
   .host-bar .hb-hint{font-family:var(--mono); font-size:11px; color:var(--slate);}
   .host-bar .hb-exit{font-size:11px; color:var(--slate); background:none; border:none; text-decoration:underline; padding:4px;}
 
-  .intermission{
-    text-align:center;
-  }
-  .intermission h2{
-    font-family:var(--display); font-size:clamp(30px,5vw,48px); margin:0 0 10px; font-weight:700;
-  }
+  .intermission{text-align:center;}
+  .intermission h2{font-family:var(--display); font-size:clamp(30px,5vw,48px); margin:0 0 10px; font-weight:700;}
   .intermission p{color:var(--slate); font-size:15px;}
 
   @media (max-width:640px){
-    .setup-main{padding:22px 16px 90px;}
+    .setup-main{padding:22px 16px 100px;}
     .award-card{flex-direction:column; gap:10px;}
     .drag-handle{display:none;}
     .host-bar{padding:12px 16px;}
     .host-bar .hb-hint{display:none;}
+    .podium-zone{gap:16px;}
   }
 </style>
 </head>
 <body>
 <a href="#main-content" class="skip-link">Skip to content</a>
 
-<!-- ================= SETUP MODE ================= -->
 <div class="mode active" id="mode-setup">
   <header class="setup-topbar">
     <div class="setup-brand">
@@ -299,7 +285,7 @@
   <main class="setup-main" id="main-content">
     <div class="setup-head">
       <h2>Build the ceremony</h2>
-      <p>Fill in every award now. At the banquet, click "Start Presentation" and reveal them one at a time — nobody in the room sees this screen.</p>
+      <p>Group awards into rounds, add an optional runner-up and photo to each, then present them one at a time. Nobody in the room sees this screen.</p>
     </div>
 
     <div class="event-title-field">
@@ -307,17 +293,16 @@
       <input type="text" id="eventTitleInput" placeholder="e.g. 2026 Season Awards Banquet" value="Season Awards Banquet">
     </div>
 
-    <div id="awardsList"></div>
+    <div id="roundsList"></div>
 
-    <div class="add-award-bar">
-      <button class="btn btn-ghost" id="addAwardBtn">+ Add an Award</button>
+    <div class="add-round-bar">
+      <button class="btn btn-ghost" id="addRoundBtn">+ Add a Round</button>
     </div>
 
     <div class="setup-actions">
       <div class="setup-actions-inner">
-        <span class="count"><strong id="awardCount">0</strong> awards in the show</span>
+        <span class="count"><strong id="awardCount">0</strong> awards across <strong id="roundCount">0</strong> rounds</span>
         <div class="btn-row">
-          <button class="btn btn-ghost" id="shuffleBtn">Shuffle Order</button>
           <button class="btn btn-gold" id="goPresentBtn2">Start Presentation →</button>
         </div>
       </div>
@@ -325,39 +310,23 @@
   </main>
 </div>
 
-<!-- ================= PRESENTATION MODE ================= -->
 <div class="mode" id="mode-present">
   <div class="confetti-layer" id="confettiLayer"></div>
-
   <div class="program-title" id="presProgramTitle">Season Awards Banquet</div>
   <div class="stage-progress" id="presProgress"></div>
 
   <div class="stage">
-
-    <!-- Intermission / start screen -->
     <div class="intermission" id="introScreen">
       <h2 id="introTitle">Season Awards Banquet</h2>
       <p>Press <strong>Next</strong> to begin.</p>
     </div>
 
-    <!-- Reveal screen -->
-    <div class="reveal-zone" id="revealScreen" style="display:none;">
-      <p class="category-label" id="categoryLabel">Award</p>
-      <h2 class="category-title" id="categoryTitle">Category Name</h2>
-      <p class="category-desc" id="categoryDesc"></p>
-      <div class="winner-zone">
-        <p class="winner-prompt" id="winnerPrompt">— click next to reveal the winner —</p>
-        <h1 class="winner-name" id="winnerName" style="display:none;"></h1>
-        <p class="winner-note" id="winnerNote"></p>
-      </div>
-    </div>
+    <div class="reveal-zone" id="revealScreen" style="display:none;"></div>
 
-    <!-- End screen -->
     <div class="intermission" id="endScreen" style="display:none;">
       <h2>That's a wrap! 🎉</h2>
       <p>Congratulations to every award winner this season.</p>
     </div>
-
   </div>
 
   <div class="host-bar">
@@ -365,7 +334,7 @@
       <button id="prevBtn">← Prev</button>
       <button id="nextBtn" class="primary">Next →</button>
     </div>
-    <span class="hb-hint">Space / → = next · ← = prev · only you can see this control bar's actions in advance</span>
+    <span class="hb-hint">Space / → = next · ← = prev</span>
     <button class="hb-exit" id="exitPresentBtn">Exit to setup</button>
   </div>
 </div>
@@ -375,9 +344,8 @@
 <script>
 /* =====================================================================
    STORAGE
-   Personal (not shared) — this is a single host's private builder tool.
    ===================================================================== */
-const STORE_KEY = "awards-night-program";
+const STORE_KEY = "awards-night-program-v2";
 
 async function loadProgram(){
   try{
@@ -385,34 +353,47 @@ async function loadProgram(){
     return r ? JSON.parse(r.value) : null;
   }catch(e){ return null; }
 }
-async function saveProgram(program){
-  try{
-    await window.storage.set(STORE_KEY, JSON.stringify(program), false);
-  }catch(e){ console.error("Save failed", e); }
+async function saveProgram(p){
+  try{ await window.storage.set(STORE_KEY, JSON.stringify(p), false); }
+  catch(e){ console.error("Save failed", e); }
 }
 
-function defaultAwards(){
-  return [
-    { id: uid(), category: "Funniest Teammate", winner: "", note: "" },
-    { id: uid(), category: "Most Improved", winner: "", note: "" },
-    { id: uid(), category: "Best Attitude", winner: "", note: "" },
-    { id: uid(), category: "Iron Will Award", winner: "", note: "" },
-    { id: uid(), category: "Rookie of the Year", winner: "", note: "" },
-  ];
-}
-function uid(){ return "a_" + Date.now() + "_" + Math.random().toString(36).slice(2,8); }
+function uid(prefix){ return prefix + "_" + Date.now() + "_" + Math.random().toString(36).slice(2,8); }
 
-let program = { title: "Season Awards Banquet", awards: [] };
+function defaultProgram(){
+  return {
+    title: "Season Awards Banquet",
+    rounds: [
+      {
+        id: uid("r"),
+        name: "Team Awards",
+        awards: [
+          { id: uid("a"), category: "Funniest Teammate", runnerUp: "", runnerUpPhoto: "", winner: "", winnerPhoto: "", note: "" },
+          { id: uid("a"), category: "Most Improved", runnerUp: "", runnerUpPhoto: "", winner: "", winnerPhoto: "", note: "" },
+          { id: uid("a"), category: "Best Attitude", runnerUp: "", runnerUpPhoto: "", winner: "", winnerPhoto: "", note: "" },
+        ]
+      },
+      {
+        id: uid("r"),
+        name: "Special Recognition",
+        awards: [
+          { id: uid("a"), category: "Iron Will Award", runnerUp: "", runnerUpPhoto: "", winner: "", winnerPhoto: "", note: "" },
+          { id: uid("a"), category: "Rookie of the Year", runnerUp: "", runnerUpPhoto: "", winner: "", winnerPhoto: "", note: "" },
+        ]
+      }
+    ]
+  };
+}
+
+let program = defaultProgram();
 
 (async function init(){
   const loaded = await loadProgram();
-  if(loaded && loaded.awards && loaded.awards.length){
+  if(loaded && loaded.rounds && loaded.rounds.length){
     program = loaded;
-  } else {
-    program.awards = defaultAwards();
   }
   document.getElementById("eventTitleInput").value = program.title || "Season Awards Banquet";
-  renderAwardsList();
+  renderRoundsList();
   bindSetupEvents();
   bindPresentationEvents();
 })();
@@ -421,7 +402,7 @@ function showToast(msg){
   const t = document.getElementById("savedToast");
   t.textContent = msg;
   t.classList.add("show");
-  setTimeout(()=>t.classList.remove("show"), 1600);
+  setTimeout(()=>t.classList.remove("show"), 1500);
 }
 
 let saveTimer = null;
@@ -433,84 +414,229 @@ function queueSave(){
   }, 500);
 }
 
-/* =====================================================================
-   SETUP MODE
-   ===================================================================== */
-function renderAwardsList(){
-  const wrap = document.getElementById("awardsList");
-  document.getElementById("awardCount").textContent = program.awards.length;
+function escapeAttr(str){
+  return (str || "").replace(/&/g,"&amp;").replace(/"/g,"&quot;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+}
+function escapeHtml(str){
+  const d = document.createElement("div");
+  d.textContent = str || "";
+  return d.innerHTML;
+}
 
-  if(program.awards.length === 0){
-    wrap.innerHTML = `<p style="text-align:center; color:var(--slate-dark); padding:30px 0;">No awards yet — add your first one below.</p>`;
+/* =====================================================================
+   SETUP MODE RENDER
+   ===================================================================== */
+function totalAwardCount(){
+  return program.rounds.reduce((sum, r)=> sum + r.awards.length, 0);
+}
+
+function renderRoundsList(){
+  const wrap = document.getElementById("roundsList");
+  document.getElementById("awardCount").textContent = totalAwardCount();
+  document.getElementById("roundCount").textContent = program.rounds.length;
+
+  if(program.rounds.length === 0){
+    wrap.innerHTML = `<p style="text-align:center; color:var(--slate-dark); padding:30px 0;">No rounds yet — add one below to start.</p>`;
     return;
   }
 
-  wrap.innerHTML = program.awards.map((a, idx)=>`
-    <div class="award-card" draggable="true" data-id="${a.id}" data-idx="${idx}">
-      <span class="drag-handle" title="Drag to reorder">⠿</span>
+  wrap.innerHTML = program.rounds.map((round, rIdx) => `
+    <div class="round-block" data-round-id="${round.id}" data-round-idx="${rIdx}">
+      <div class="round-header" draggable="true" data-round-drag="${round.id}">
+        <span class="drag-handle">⠿</span>
+        <input type="text" data-round-name="${round.id}" value="${escapeAttr(round.name)}" placeholder="Round name (e.g. Team Awards)">
+        <div class="round-actions">
+          <button data-round-up="${round.id}" title="Move round up">↑</button>
+          <button data-round-down="${round.id}" title="Move round down">↓</button>
+          <button data-round-remove="${round.id}" title="Remove this round">Remove round</button>
+        </div>
+      </div>
+      <div class="round-body">
+        ${round.awards.map(a => renderAwardCard(a)).join("")}
+        <button class="add-award-inline" data-add-award="${round.id}">+ Add an award to this round</button>
+      </div>
+    </div>
+  `).join("");
+
+  bindRoundsListEvents();
+}
+
+function renderAwardCard(a){
+  return `
+    <div class="award-card" draggable="true" data-award-id="${a.id}">
+      <span class="drag-handle">⠿</span>
       <div class="fields">
         <div class="field-row">
           <div class="field">
             <label>Award category</label>
             <input type="text" data-field="category" data-id="${a.id}" value="${escapeAttr(a.category)}" placeholder="e.g. Funniest Teammate">
           </div>
-          <div class="field">
-            <label>Winner</label>
-            <input type="text" data-field="winner" data-id="${a.id}" value="${escapeAttr(a.winner)}" placeholder="Swimmer's name">
+        </div>
+        <div class="field-row">
+          <div class="field optional">
+            <label>Runner-up</label>
+            <input type="text" data-field="runnerUp" data-id="${a.id}" value="${escapeAttr(a.runnerUp)}" placeholder="Runner-up's name">
+          </div>
+          <div class="field optional">
+            <label>Runner-up photo URL</label>
+            <input type="text" data-field="runnerUpPhoto" data-id="${a.id}" value="${escapeAttr(a.runnerUpPhoto)}" placeholder="https://...">
           </div>
         </div>
-        <div class="field">
-          <label>Note (optional — read aloud or shown under the winner's name)</label>
-          <textarea data-field="note" data-id="${a.id}" placeholder="A line about why they won this...">${escapeAttr(a.note)}</textarea>
+        <div class="field-row">
+          <div class="field">
+            <label>Winner</label>
+            <input type="text" data-field="winner" data-id="${a.id}" value="${escapeAttr(a.winner)}" placeholder="Winner's name">
+          </div>
+          <div class="field optional">
+            <label>Winner photo URL</label>
+            <input type="text" data-field="winnerPhoto" data-id="${a.id}" value="${escapeAttr(a.winnerPhoto)}" placeholder="https://...">
+          </div>
+        </div>
+        <div class="field optional">
+          <label>Note</label>
+          <textarea data-field="note" data-id="${a.id}" placeholder="A line about why they won this...">${escapeHtml(a.note)}</textarea>
         </div>
       </div>
-      <button class="remove-btn" data-remove="${a.id}" title="Remove this award" aria-label="Remove this award">&times;</button>
+      <button class="remove-btn" data-remove-award="${a.id}" title="Remove this award" aria-label="Remove this award">&times;</button>
     </div>
-  `).join("");
-
-  // input bindings
-  wrap.querySelectorAll("input[data-field], textarea[data-field]").forEach(el=>{
-    el.addEventListener("input", ()=>{
-      const id = el.dataset.id;
-      const field = el.dataset.field;
-      const award = program.awards.find(a=>a.id===id);
-      if(award){ award[field] = el.value; queueSave(); }
-    });
-  });
-
-  wrap.querySelectorAll("[data-remove]").forEach(btn=>{
-    btn.addEventListener("click", ()=>{
-      const id = btn.dataset.remove;
-      program.awards = program.awards.filter(a=>a.id!==id);
-      renderAwardsList();
-      queueSave();
-    });
-  });
-
-  // drag to reorder
-  let dragSrcIdx = null;
-  wrap.querySelectorAll(".award-card").forEach(card=>{
-    card.addEventListener("dragstart", (e)=>{
-      dragSrcIdx = parseInt(card.dataset.idx, 10);
-      card.classList.add("dragging");
-      e.dataTransfer.effectAllowed = "move";
-    });
-    card.addEventListener("dragend", ()=>{ card.classList.remove("dragging"); });
-    card.addEventListener("dragover", (e)=>{ e.preventDefault(); });
-    card.addEventListener("drop", (e)=>{
-      e.preventDefault();
-      const targetIdx = parseInt(card.dataset.idx, 10);
-      if(dragSrcIdx === null || dragSrcIdx === targetIdx) return;
-      const moved = program.awards.splice(dragSrcIdx, 1)[0];
-      program.awards.splice(targetIdx, 0, moved);
-      renderAwardsList();
-      queueSave();
-    });
-  });
+  `;
 }
 
-function escapeAttr(str){
-  return (str || "").replace(/&/g,"&amp;").replace(/"/g,"&quot;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+function findAward(id){
+  for(const round of program.rounds){
+    const a = round.awards.find(x=>x.id===id);
+    if(a) return a;
+  }
+  return null;
+}
+function findRoundIndexById(id){
+  return program.rounds.findIndex(r=>r.id===id);
+}
+function findRoundContainingAward(awardId){
+  return program.rounds.find(r=>r.awards.some(a=>a.id===awardId));
+}
+
+function bindRoundsListEvents(){
+  const wrap = document.getElementById("roundsList");
+
+  // round name edits
+  wrap.querySelectorAll("[data-round-name]").forEach(el=>{
+    el.addEventListener("input", ()=>{
+      const round = program.rounds.find(r=>r.id===el.dataset.roundName);
+      if(round){ round.name = el.value; queueSave(); }
+    });
+  });
+
+  // round move up/down
+  wrap.querySelectorAll("[data-round-up]").forEach(btn=>{
+    btn.addEventListener("click", ()=>{
+      const idx = findRoundIndexById(btn.dataset.roundUp);
+      if(idx > 0){
+        [program.rounds[idx-1], program.rounds[idx]] = [program.rounds[idx], program.rounds[idx-1]];
+        renderRoundsList(); queueSave();
+      }
+    });
+  });
+  wrap.querySelectorAll("[data-round-down]").forEach(btn=>{
+    btn.addEventListener("click", ()=>{
+      const idx = findRoundIndexById(btn.dataset.roundDown);
+      if(idx >= 0 && idx < program.rounds.length - 1){
+        [program.rounds[idx+1], program.rounds[idx]] = [program.rounds[idx], program.rounds[idx+1]];
+        renderRoundsList(); queueSave();
+      }
+    });
+  });
+
+  // remove round
+  wrap.querySelectorAll("[data-round-remove]").forEach(btn=>{
+    btn.addEventListener("click", ()=>{
+      const round = program.rounds.find(r=>r.id===btn.dataset.roundRemove);
+      if(!confirm(`Remove the round "${round.name || "Untitled"}" and all ${round.awards.length} award(s) in it?`)) return;
+      program.rounds = program.rounds.filter(r=>r.id!==btn.dataset.roundRemove);
+      renderRoundsList(); queueSave();
+    });
+  });
+
+  // add award to round
+  wrap.querySelectorAll("[data-add-award]").forEach(btn=>{
+    btn.addEventListener("click", ()=>{
+      const round = program.rounds.find(r=>r.id===btn.dataset.addAward);
+      round.awards.push({ id: uid("a"), category: "", runnerUp: "", runnerUpPhoto: "", winner: "", winnerPhoto: "", note: "" });
+      renderRoundsList(); queueSave();
+      const inputs = wrap.querySelectorAll(`[data-round-id="${round.id}"] input[data-field="category"]`);
+      if(inputs.length) inputs[inputs.length-1].focus();
+    });
+  });
+
+  // award field edits
+  wrap.querySelectorAll("input[data-field], textarea[data-field]").forEach(el=>{
+    el.addEventListener("input", ()=>{
+      const a = findAward(el.dataset.id);
+      if(a){ a[el.dataset.field] = el.value; queueSave(); }
+    });
+  });
+
+  // remove award
+  wrap.querySelectorAll("[data-remove-award]").forEach(btn=>{
+    btn.addEventListener("click", ()=>{
+      const round = findRoundContainingAward(btn.dataset.removeAward);
+      if(round){
+        round.awards = round.awards.filter(a=>a.id!==btn.dataset.removeAward);
+        renderRoundsList(); queueSave();
+      }
+    });
+  });
+
+  // drag-reorder rounds
+  let dragRoundId = null;
+  wrap.querySelectorAll("[data-round-drag]").forEach(handle=>{
+    handle.addEventListener("dragstart", (e)=>{
+      dragRoundId = handle.dataset.roundDrag;
+      handle.classList.add("dragging");
+      e.dataTransfer.effectAllowed = "move";
+    });
+    handle.addEventListener("dragend", ()=> handle.classList.remove("dragging"));
+  });
+  wrap.querySelectorAll(".round-block").forEach(block=>{
+    block.addEventListener("dragover", (e)=> e.preventDefault());
+    block.addEventListener("drop", (e)=>{
+      e.preventDefault();
+      if(!dragRoundId) return;
+      const targetId = block.dataset.roundId;
+      const srcIdx = findRoundIndexById(dragRoundId);
+      const targetIdx = findRoundIndexById(targetId);
+      if(srcIdx === -1 || targetIdx === -1 || srcIdx === targetIdx) return;
+      const moved = program.rounds.splice(srcIdx, 1)[0];
+      program.rounds.splice(targetIdx, 0, moved);
+      renderRoundsList(); queueSave();
+    });
+  });
+
+  // drag-reorder awards within / across rounds
+  let dragAwardId = null;
+  wrap.querySelectorAll(".award-card").forEach(card=>{
+    card.addEventListener("dragstart", (e)=>{
+      dragAwardId = card.dataset.awardId;
+      card.classList.add("dragging");
+      e.dataTransfer.effectAllowed = "move";
+      e.stopPropagation();
+    });
+    card.addEventListener("dragend", ()=> card.classList.remove("dragging"));
+    card.addEventListener("dragover", (e)=>{ e.preventDefault(); e.stopPropagation(); });
+    card.addEventListener("drop", (e)=>{
+      e.preventDefault();
+      e.stopPropagation();
+      if(!dragAwardId || dragAwardId === card.dataset.awardId) return;
+      const srcRound = findRoundContainingAward(dragAwardId);
+      const targetRound = findRoundContainingAward(card.dataset.awardId);
+      if(!srcRound || !targetRound) return;
+      const srcIdx = srcRound.awards.findIndex(a=>a.id===dragAwardId);
+      const moved = srcRound.awards.splice(srcIdx, 1)[0];
+      const targetIdx = targetRound.awards.findIndex(a=>a.id===card.dataset.awardId);
+      targetRound.awards.splice(targetIdx, 0, moved);
+      renderRoundsList(); queueSave();
+    });
+  });
 }
 
 function bindSetupEvents(){
@@ -519,23 +645,11 @@ function bindSetupEvents(){
     queueSave();
   });
 
-  document.getElementById("addAwardBtn").addEventListener("click", ()=>{
-    program.awards.push({ id: uid(), category: "", winner: "", note: "" });
-    renderAwardsList();
-    queueSave();
-    const inputs = document.querySelectorAll('#awardsList input[data-field="category"]');
+  document.getElementById("addRoundBtn").addEventListener("click", ()=>{
+    program.rounds.push({ id: uid("r"), name: "", awards: [] });
+    renderRoundsList(); queueSave();
+    const inputs = document.querySelectorAll('[data-round-name]');
     if(inputs.length) inputs[inputs.length-1].focus();
-  });
-
-  document.getElementById("shuffleBtn").addEventListener("click", ()=>{
-    if(program.awards.length < 2) return;
-    for(let i = program.awards.length - 1; i > 0; i--){
-      const j = Math.floor(Math.random() * (i+1));
-      [program.awards[i], program.awards[j]] = [program.awards[j], program.awards[i]];
-    }
-    renderAwardsList();
-    queueSave();
-    showToast("Order shuffled");
   });
 
   document.getElementById("goPresentBtn").addEventListener("click", enterPresentMode);
@@ -543,29 +657,47 @@ function bindSetupEvents(){
 }
 
 function enterPresentMode(){
-  const usable = program.awards.filter(a => a.category.trim());
-  if(usable.length === 0){
-    alert("Add at least one award with a category name before starting the presentation.");
+  const flat = flattenProgram();
+  if(flat.length === 0){
+    alert("Add at least one round with at least one award (with a category name) before starting the presentation.");
     return;
   }
   document.getElementById("mode-setup").classList.remove("active");
   document.getElementById("mode-present").classList.add("active");
   document.getElementById("presProgramTitle").textContent = program.title || "Season Awards Banquet";
   document.getElementById("introTitle").textContent = program.title || "Season Awards Banquet";
-  presIndex = -1; // -1 = intro screen
-  presStage = "category"; // category | winner
+  presSequence = flat;
+  presIndex = -1;
+  presStage = "round";
   showIntro();
 }
 
 /* =====================================================================
-   PRESENTATION MODE
+   FLATTEN PROGRAM INTO A LINEAR SEQUENCE
+   Each entry is either {type:"round", name} or {type:"award", ...award, roundName}
+   A round entry is inserted before the first award of each round.
    ===================================================================== */
-let presIndex = -1;
-let presStage = "category";
-
-function presentableAwards(){
-  return program.awards.filter(a => a.category.trim());
+function flattenProgram(){
+  const seq = [];
+  program.rounds.forEach(round=>{
+    const usableAwards = round.awards.filter(a=>a.category.trim());
+    if(usableAwards.length === 0) return;
+    seq.push({ type:"round", name: round.name || "Untitled Round" });
+    usableAwards.forEach(a=> seq.push({ type:"award", ...a, roundName: round.name || "Untitled Round" }));
+  });
+  return seq;
 }
+
+/* =====================================================================
+   PRESENTATION SEQUENCER
+   Each "award" entry steps through sub-stages:
+     category -> [drumroll if runnerUp set] -> [runnerUp] -> drumroll -> winner
+   A "round" entry is a single-stage title card.
+   ===================================================================== */
+let presSequence = [];
+let presIndex = -1;       // index into presSequence
+let presStage = "round";  // for award entries: category | runnerup-drumroll | runnerup | winner-drumroll | winner
+let renderGen = 0;        // bumped on every render; stale timeouts check this before acting
 
 function bindPresentationEvents(){
   document.getElementById("nextBtn").addEventListener("click", presNext);
@@ -575,7 +707,6 @@ function bindPresentationEvents(){
     document.getElementById("mode-present").classList.remove("active");
     document.getElementById("mode-setup").classList.add("active");
   });
-
   document.addEventListener("keydown", (e)=>{
     if(!document.getElementById("mode-present").classList.contains("active")) return;
     if(e.key === "ArrowRight" || e.key === " "){ e.preventDefault(); presNext(); }
@@ -589,7 +720,6 @@ function showIntro(){
   document.getElementById("endScreen").style.display = "none";
   document.getElementById("presProgress").textContent = "";
 }
-
 function showEnd(){
   document.getElementById("introScreen").style.display = "none";
   document.getElementById("revealScreen").style.display = "none";
@@ -597,96 +727,210 @@ function showEnd(){
   document.getElementById("presProgress").textContent = "";
 }
 
+// stage order for an award entry, depends on whether it has a runner-up
+function awardStages(entry){
+  if(entry.runnerUp && entry.runnerUp.trim()){
+    return ["category", "runnerup-drumroll", "runnerup", "winner-drumroll", "winner"];
+  }
+  return ["category", "winner-drumroll", "winner"];
+}
+
 function presNext(){
-  const list = presentableAwards();
   if(presIndex === -1){
-    // move from intro to first award, category stage
     presIndex = 0;
-    presStage = "category";
-    renderRevealStage(list);
+    presStage = presSequence[0].type === "round" ? "round" : awardStages(presSequence[0])[0];
+    renderCurrentStage();
     return;
   }
-  if(presIndex >= list.length){
-    return; // already at end
-  }
-  if(presStage === "category"){
-    presStage = "winner";
-    renderRevealStage(list);
+  if(presIndex >= presSequence.length) return; // already past the end (on end screen) — Next does nothing further
+
+  const entry = presSequence[presIndex];
+  if(entry.type === "round"){
+    advanceToNextEntry();
     return;
   }
-  // currently on winner stage -> advance to next award
-  presIndex++;
-  presStage = "category";
-  if(presIndex >= list.length){
+  const stages = awardStages(entry);
+  const curIdx = stages.indexOf(presStage);
+  if(curIdx < stages.length - 1){
+    presStage = stages[curIdx + 1];
+    renderCurrentStage();
+  } else {
+    advanceToNextEntry();
+  }
+}
+
+function advanceToNextEntry(){
+  if(presIndex >= presSequence.length - 1){
+    presIndex = presSequence.length; // canonical "past the end" marker, used consistently
     showEnd();
     return;
   }
-  renderRevealStage(list);
+  presIndex++;
+  const next = presSequence[presIndex];
+  presStage = next.type === "round" ? "round" : awardStages(next)[0];
+  renderCurrentStage();
 }
 
 function presPrev(){
-  const list = presentableAwards();
-  if(presIndex === -1) return;
-  if(presStage === "winner"){
-    presStage = "category";
-    renderRevealStage(list);
+  if(presIndex === -1) return; // already at intro — Prev does nothing further
+
+  if(presIndex >= presSequence.length){
+    // currently on the end screen — step back into the last real entry
+    presIndex = presSequence.length - 1;
+    const lastEntry = presSequence[presIndex];
+    presStage = lastEntry.type === "round" ? "round" : awardStages(lastEntry)[awardStages(lastEntry).length - 1];
+    renderCurrentStage();
     return;
   }
-  // on category stage -> go back to previous award's winner stage, or intro
+
+  const entry = presSequence[presIndex];
+
+  if(entry.type === "award"){
+    const stages = awardStages(entry);
+    const curIdx = stages.indexOf(presStage);
+    if(curIdx > 0){
+      presStage = stages[curIdx - 1];
+      renderCurrentStage();
+      return;
+    }
+  }
+
+  // move to previous entry, landing on its last stage
   presIndex--;
   if(presIndex < 0){
     presIndex = -1;
     showIntro();
     return;
   }
-  presStage = "winner";
-  renderRevealStage(list);
+  const prevEntry = presSequence[presIndex];
+  if(prevEntry.type === "round"){
+    presStage = "round";
+  } else {
+    const stages = awardStages(prevEntry);
+    presStage = stages[stages.length - 1];
+  }
+  renderCurrentStage();
 }
 
-function renderRevealStage(list){
+function renderCurrentStage(){
+  renderGen++;
+  const myGen = renderGen;
+
   document.getElementById("introScreen").style.display = "none";
   document.getElementById("endScreen").style.display = "none";
-  document.getElementById("revealScreen").style.display = "block";
+  const reveal = document.getElementById("revealScreen");
+  reveal.style.display = "block";
 
-  const award = list[presIndex];
-  document.getElementById("presProgress").textContent = `Award ${presIndex + 1} of ${list.length}`;
+  const entry = presSequence[presIndex];
 
-  const catLabel = document.getElementById("categoryLabel");
-  const catTitle = document.getElementById("categoryTitle");
-  const catDesc = document.getElementById("categoryDesc");
-  const winnerPrompt = document.getElementById("winnerPrompt");
-  const winnerName = document.getElementById("winnerName");
-  const winnerNote = document.getElementById("winnerNote");
+  // progress indicator counts award entries only
+  const awardEntries = presSequence.filter(e=>e.type==="award");
+  const awardNumber = presSequence.slice(0, presIndex+1).filter(e=>e.type==="award").length;
+  document.getElementById("presProgress").textContent = entry.type === "round"
+    ? `Round ${presSequence.slice(0,presIndex+1).filter(e=>e.type==="round").length} of ${presSequence.filter(e=>e.type==="round").length}`
+    : `Award ${awardNumber} of ${awardEntries.length}`;
 
-  // reset animation classes
-  [catLabel, catTitle, catDesc].forEach(el=>el.classList.remove("in"));
-  winnerName.classList.remove("in");
-  winnerNote.classList.remove("in");
-  winnerName.style.display = "none";
-  winnerNote.textContent = "";
+  if(entry.type === "round"){
+    reveal.innerHTML = `
+      <div class="round-card">
+        <p class="rc-eyebrow" id="rcEyebrow">Up Next</p>
+        <h2 id="rcTitle">${escapeHtml(entry.name)}</h2>
+        <div class="rc-line" id="rcLine"></div>
+      </div>
+    `;
+    requestAnimationFrame(()=>{
+      setTimeout(()=>{ if(renderGen!==myGen) return; const el = document.getElementById("rcEyebrow"); if(el) el.classList.add("in"); }, 30);
+      setTimeout(()=>{ if(renderGen!==myGen) return; const el = document.getElementById("rcTitle"); if(el) el.classList.add("in"); }, 140);
+      setTimeout(()=>{ if(renderGen!==myGen) return; const el = document.getElementById("rcLine"); if(el) el.classList.add("in"); }, 420);
+    });
+    return;
+  }
 
-  catLabel.textContent = `Award ${presIndex + 1}`;
-  catTitle.textContent = award.category;
-  catDesc.textContent = "";
+  // award entry
+  renderAwardStage(entry, reveal, myGen);
+}
 
-  requestAnimationFrame(()=>{
-    setTimeout(()=>catLabel.classList.add("in"), 30);
-    setTimeout(()=>catTitle.classList.add("in"), 140);
-  });
+function photoHtml(url, name, extraClass){
+  const safeUrl = escapeAttr(url || "");
+  if(url && url.trim()){
+    return `<img class="podium-photo ${extraClass}" src="${safeUrl}" alt="${escapeAttr(name||'')}" onerror="this.outerHTML='<div class=\\'podium-photo placeholder ${extraClass}\\'>${(name||'?').trim().charAt(0).toUpperCase()}</div>'">`;
+  }
+  return `<div class="podium-photo placeholder ${extraClass}">${escapeHtml((name||"?").trim().charAt(0).toUpperCase())}</div>`;
+}
+
+function renderAwardStage(entry, reveal, myGen){
+  const stages = awardStages(entry);
 
   if(presStage === "category"){
-    winnerPrompt.style.display = "block";
-    winnerPrompt.textContent = "— click next to reveal the winner —";
-  } else {
-    winnerPrompt.style.display = "none";
-    winnerName.textContent = award.winner || "(no winner entered)";
-    winnerName.style.display = "block";
-    winnerNote.textContent = award.note || "";
-    setTimeout(()=>{
-      winnerName.classList.add("in");
-      fireConfetti();
-    }, 80);
-    setTimeout(()=>winnerNote.classList.add("in"), 320);
+    reveal.innerHTML = `
+      <p class="category-label" id="catLabel">${escapeHtml(entry.roundName)}</p>
+      <h2 class="category-title" id="catTitle">${escapeHtml(entry.category)}</h2>
+      <p class="winner-prompt">— click next to continue —</p>
+    `;
+    requestAnimationFrame(()=>{
+      setTimeout(()=>{ if(renderGen!==myGen) return; const el = document.getElementById("catLabel"); if(el) el.classList.add("in"); }, 30);
+      setTimeout(()=>{ if(renderGen!==myGen) return; const el = document.getElementById("catTitle"); if(el) el.classList.add("in"); }, 140);
+    });
+    return;
+  }
+
+  if(presStage === "runnerup-drumroll" || presStage === "winner-drumroll"){
+    const label = presStage === "runnerup-drumroll" ? "and the runner-up is..." : "and the winner is...";
+    reveal.innerHTML = `
+      <p class="category-label in">${escapeHtml(entry.category)}</p>
+      <div class="drumroll-zone">
+        <div class="drumroll-ring"></div>
+        <p class="drumroll-label">${escapeHtml(label)}</p>
+        <div class="drumroll-dots"><span></span><span></span><span></span></div>
+      </div>
+    `;
+    return;
+  }
+
+  if(presStage === "runnerup"){
+    reveal.innerHTML = `
+      <p class="category-label in">${escapeHtml(entry.category)}</p>
+      <div class="podium-zone">
+        <div class="podium-slot in" id="runnerSlot">
+          ${photoHtml(entry.runnerUpPhoto, entry.runnerUp, "")}
+          <p class="runner-up-label">Runner-Up</p>
+          <p class="runner-up-name">${escapeHtml(entry.runnerUp)}</p>
+        </div>
+      </div>
+      <p class="winner-prompt">— click next for the winner —</p>
+    `;
+    return;
+  }
+
+  if(presStage === "winner"){
+    const hasRunnerUp = entry.runnerUp && entry.runnerUp.trim();
+    reveal.innerHTML = `
+      <p class="category-label in">${escapeHtml(entry.category)}</p>
+      <div class="podium-zone">
+        ${hasRunnerUp ? `
+          <div class="podium-slot in">
+            ${photoHtml(entry.runnerUpPhoto, entry.runnerUp, "")}
+            <p class="runner-up-label">Runner-Up</p>
+            <p class="runner-up-name">${escapeHtml(entry.runnerUp)}</p>
+          </div>
+        ` : ``}
+        <div class="podium-slot winner-slot" id="winnerSlot">
+          ${photoHtml(entry.winnerPhoto, entry.winner, "")}
+          <p class="winner-label">Winner</p>
+          <h1 class="winner-name">${escapeHtml(entry.winner || "(no winner entered)")}</h1>
+        </div>
+      </div>
+      <p class="winner-note" id="winnerNote">${escapeHtml(entry.note || "")}</p>
+    `;
+    requestAnimationFrame(()=>{
+      setTimeout(()=>{
+        if(renderGen!==myGen) return;
+        const slot = document.getElementById("winnerSlot");
+        if(slot){ slot.classList.add("in"); fireConfetti(); }
+      }, 60);
+      setTimeout(()=>{ if(renderGen!==myGen) return; const el = document.getElementById("winnerNote"); if(el) el.classList.add("in"); }, 280);
+    });
+    return;
   }
 }
 
@@ -695,18 +939,18 @@ function renderRevealStage(list){
    ===================================================================== */
 function fireConfetti(){
   const layer = document.getElementById("confettiLayer");
-  const colors = ["#f4b942","#00a8a8","#ffffff","#ff8a5c"];
-  const count = 60;
+  const colors = ["#f4b942","#00a8a8","#ffffff","#ff8a5c","#b8c4cc"];
+  const count = 90;
   for(let i=0;i<count;i++){
     const el = document.createElement("div");
     el.className = "confetto";
-    const size = 6 + Math.random()*7;
+    const size = 6 + Math.random()*9;
     el.style.width = size + "px";
     el.style.height = (size * (0.4 + Math.random()*0.6)) + "px";
     el.style.background = colors[Math.floor(Math.random()*colors.length)];
     el.style.left = (Math.random()*100) + "%";
-    const duration = 1.6 + Math.random()*1.4;
-    const delay = Math.random()*0.25;
+    const duration = 1.8 + Math.random()*1.6;
+    const delay = Math.random()*0.3;
     const rotate = (Math.random()*720 - 360);
     el.style.animation = `confetti-fall ${duration}s cubic-bezier(.25,.46,.45,.94) ${delay}s forwards`;
     el.style.setProperty("--rot", rotate + "deg");
@@ -715,7 +959,6 @@ function fireConfetti(){
   }
 }
 
-// keyframes injected via JS (keeps single-file structure simple)
 const styleEl = document.createElement("style");
 styleEl.textContent = `
 @keyframes confetti-fall{
