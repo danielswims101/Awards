@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Team Awards Night</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#0a1628;
+    --navy-soft:#142238;
+    --navy-deep:#060d18;
+    --teal:#00a8a8;
+    --teal-dark:#007878;
+    --gold:#f4b942;
+    --gold-soft:#fdebc4;
+    --white:#ffffff;
+    --slate:#8fa8b3;
+    --slate-dark:#5a7a8a;
+    --ink:#0d1b2a;
+    --pool:#f3f8f8;
+    --line:#dbe9e9;
+
+    --display:'Oswald',sans-serif;
+    --body:'Inter',sans-serif;
+    --mono:'JetBrains Mono',monospace;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0; font-family:var(--body); background:var(--pool); color:var(--ink); line-height:1.5; -webkit-font-smoothing:antialiased;}
+  ::selection{background:var(--gold); color:var(--navy);}
+
+  @media (prefers-reduced-motion: reduce){
+    *{animation-duration:0.01ms !important; transition-duration:0.01ms !important;}
+  }
+
+  button{font-family:var(--body); cursor:pointer;}
+  input, select, textarea{font-family:var(--body);}
+  *:focus-visible{outline:3px solid var(--gold); outline-offset:2px;}
+
+  .skip-link{position:absolute; left:-999px; top:0; background:var(--gold); color:var(--navy); padding:10px 16px; font-weight:600; z-index:999;}
+  .skip-link:focus{left:8px; top:8px;}
+
+  /* ============ MODE SWITCHING ============ */
+  .mode{display:none;}
+  .mode.active{display:block;}
+
+  /* ============================================================
+     SETUP MODE (private, host-only screen)
+     ============================================================ */
+  #mode-setup{
+    min-height:100vh;
+  }
+  .setup-topbar{
+    background:var(--navy); color:white;
+    padding:18px 26px;
+    display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:14px;
+    border-bottom:5px solid var(--gold);
+  }
+  .setup-brand{display:flex; align-items:center; gap:12px;}
+  .setup-brand .mark{
+    width:36px; height:36px; border-radius:50%;
+    background:radial-gradient(circle at 35% 30%, #16283f, var(--navy-soft) 70%);
+    border:2px solid var(--gold); display:flex; align-items:center; justify-content:center;
+    font-family:var(--mono); font-weight:700; font-size:15px; color:var(--gold); flex-shrink:0;
+  }
+  .setup-brand h1{font-family:var(--display); font-size:18px; font-weight:600; margin:0;}
+  .setup-brand .sub{font-family:var(--mono); font-size:10.5px; color:var(--slate); letter-spacing:0.08em; text-transform:uppercase;}
+
+  .setup-main{max-width:880px; margin:0 auto; padding:32px 24px 100px;}
+
+  .setup-head{margin-bottom:24px;}
+  .setup-head h2{font-family:var(--display); font-size:25px; color:var(--navy); margin:0 0 6px; font-weight:600;}
+  .setup-head p{margin:0; color:var(--slate-dark); font-size:14px; max-width:540px;}
+
+  .btn{font-family:var(--body); font-weight:600; font-size:13.5px; padding:10px 18px; border-radius:7px; border:none; cursor:pointer; transition:transform 0.1s, box-shadow 0.15s;}
+  .btn:active{transform:scale(0.97);}
+  .btn-gold{background:var(--gold); color:var(--navy);}
+  .btn-gold:hover{background:#e8aa2e;}
+  .btn-ghost{background:white; color:var(--navy); border:1.5px solid var(--line);}
+  .btn-ghost:hover{border-color:var(--teal);}
+  .btn-danger{background:#fde6ee; color:#c4356f;}
+  .btn-danger:hover{background:#fad0e0;}
+  .btn-row{display:flex; gap:10px; flex-wrap:wrap;}
+
+  .award-card{
+    background:white; border:1.5px solid var(--line); border-radius:12px;
+    padding:18px 20px; margin-bottom:14px;
+    display:flex; gap:16px; align-items:flex-start;
+    cursor:grab;
+  }
+  .award-card.dragging{opacity:0.4;}
+  .drag-handle{
+    font-family:var(--mono); color:var(--slate); font-size:13px; padding-top:8px; cursor:grab; user-select:none;
+  }
+  .award-card .fields{flex:1; display:grid; gap:10px;}
+  .award-card .field-row{display:flex; gap:10px; flex-wrap:wrap;}
+  .award-card .field{flex:1; min-width:160px;}
+  .award-card label{display:block; font-family:var(--mono); font-size:10px; text-transform:uppercase; letter-spacing:0.06em; color:var(--slate-dark); margin-bottom:4px;}
+  .award-card input, .award-card textarea{
+    width:100%; padding:9px 11px; border-radius:7px; border:1.5px solid var(--line);
+    font-size:14px; background:var(--pool);
+  }
+  .award-card input:focus, .award-card textarea:focus{border-color:var(--gold); background:white;}
+  .award-card textarea{resize:vertical; min-height:38px; font-size:13.5px;}
+  .award-card .remove-btn{
+    background:none; border:none; color:var(--slate); font-size:18px; padding:4px; line-height:1; flex-shrink:0;
+  }
+  .award-card .remove-btn:hover{color:#c4356f;}
+
+  .add-award-bar{
+    border:2px dashed var(--line); border-radius:12px; padding:18px;
+    text-align:center; margin-bottom:24px; color:var(--slate-dark);
+  }
+
+  .setup-actions{
+    position:sticky; bottom:0; background:linear-gradient(180deg, transparent, var(--pool) 30%);
+    padding:22px 0 4px; margin-top:10px;
+  }
+  .setup-actions-inner{
+    background:var(--navy); border-radius:14px; padding:18px 22px;
+    display:flex; align-items:center; justify-content:space-between; gap:14px; flex-wrap:wrap;
+    box-shadow:0 14px 40px rgba(10,22,40,0.25);
+  }
+  .setup-actions-inner .count{color:var(--slate); font-size:13px; font-family:var(--mono);}
+  .setup-actions-inner .count strong{color:white;}
+
+  .saved-toast{
+    position:fixed; bottom:24px; left:50%; transform:translateX(-50%) translateY(12px);
+    background:var(--navy); color:white; padding:11px 20px; border-radius:8px;
+    font-size:13px; font-weight:600; box-shadow:0 10px 30px rgba(0,0,0,0.3);
+    opacity:0; transition:opacity 0.25s, transform 0.25s; z-index:200; pointer-events:none;
+  }
+  .saved-toast.show{opacity:1; transform:translateX(-50%) translateY(0);}
+
+  .event-title-field{
+    background:white; border:1.5px solid var(--line); border-radius:12px;
+    padding:18px 20px; margin-bottom:22px;
+  }
+  .event-title-field label{display:block; font-family:var(--mono); font-size:10px; text-transform:uppercase; letter-spacing:0.06em; color:var(--slate-dark); margin-bottom:6px;}
+  .event-title-field input{width:100%; padding:10px 12px; border-radius:7px; border:1.5px solid var(--line); font-size:18px; font-family:var(--display); background:var(--pool);}
+  .event-title-field input:focus{border-color:var(--gold); background:white;}
+
+  /* ============================================================
+     PRESENTATION MODE (the room sees only this)
+     ============================================================ */
+  #mode-present{
+    min-height:100vh;
+    background:radial-gradient(ellipse at 50% -10%, var(--navy-soft) 0%, var(--navy) 45%, var(--navy-deep) 100%);
+    color:white;
+    display:flex; flex-direction:column;
+    position:relative;
+    overflow:hidden;
+  }
+
+  .stage{
+    flex:1;
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    padding:40px 24px;
+    position:relative;
+    z-index:2;
+  }
+
+  .program-title{
+    position:absolute; top:32px; left:0; right:0; text-align:center;
+    font-family:var(--mono); font-size:13px; letter-spacing:0.22em; text-transform:uppercase;
+    color:var(--gold); opacity:0.85; z-index:2;
+  }
+
+  .stage-progress{
+    position:absolute; top:64px; left:0; right:0; text-align:center;
+    font-family:var(--mono); font-size:11px; color:var(--slate); letter-spacing:0.1em; z-index:2;
+  }
+
+  .reveal-zone{
+    text-align:center;
+    max-width:900px;
+    width:100%;
+  }
+
+  .category-label{
+    font-family:var(--mono); font-size:14px; letter-spacing:0.2em; text-transform:uppercase;
+    color:var(--teal); margin:0 0 18px; opacity:0;
+    transition:opacity 0.6s ease, transform 0.6s ease;
+    transform:translateY(10px);
+  }
+  .category-label.in{opacity:1; transform:translateY(0);}
+
+  .category-title{
+    font-family:var(--display); font-weight:700;
+    font-size:clamp(32px, 6vw, 64px);
+    line-height:1.05;
+    margin:0 0 8px;
+    opacity:0;
+    transform:translateY(16px) scale(0.97);
+    transition:opacity 0.7s cubic-bezier(.2,.8,.2,1), transform 0.7s cubic-bezier(.2,.8,.2,1);
+  }
+  .category-title.in{opacity:1; transform:translateY(0) scale(1);}
+
+  .category-desc{
+    font-size:16px; color:var(--slate); margin:0 0 46px; opacity:0;
+    transition:opacity 0.6s ease;
+    max-width:560px; margin-left:auto; margin-right:auto;
+  }
+  .category-desc.in{opacity:1;}
+
+  .winner-zone{
+    min-height:160px;
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+  }
+
+  .winner-prompt{
+    font-family:var(--mono); font-size:12.5px; letter-spacing:0.14em; text-transform:uppercase;
+    color:var(--slate); opacity:0.7;
+  }
+
+  .winner-name{
+    font-family:var(--display); font-weight:700;
+    font-size:clamp(40px, 8vw, 84px);
+    color:var(--gold);
+    margin:0;
+    opacity:0;
+    transform:scale(0.85);
+    text-shadow:0 0 60px rgba(244,185,66,0.35);
+  }
+  .winner-name.in{
+    opacity:1; transform:scale(1);
+    transition:opacity 0.55s cubic-bezier(.2,.9,.25,1.3), transform 0.55s cubic-bezier(.2,.9,.25,1.3);
+  }
+
+  .winner-note{
+    font-size:16px; color:#cfe3e6; margin-top:14px; max-width:600px;
+    opacity:0; transition:opacity 0.6s ease 0.15s;
+  }
+  .winner-note.in{opacity:1;}
+
+  /* confetti burst */
+  .confetti-layer{
+    position:absolute; inset:0; pointer-events:none; z-index:1; overflow:hidden;
+  }
+  .confetto{
+    position:absolute; top:-20px; border-radius:2px; opacity:0;
+  }
+
+  /* host control bar */
+  .host-bar{
+    position:relative; z-index:3;
+    display:flex; align-items:center; justify-content:space-between; gap:14px; flex-wrap:wrap;
+    padding:16px 24px; background:rgba(6,13,24,0.85); backdrop-filter:blur(6px);
+    border-top:1px solid rgba(255,255,255,0.08);
+  }
+  .host-bar .hb-left{display:flex; gap:10px; align-items:center;}
+  .host-bar button{
+    font-family:var(--mono); font-size:12px; letter-spacing:0.04em; font-weight:600;
+    padding:10px 16px; border-radius:7px; border:1.5px solid rgba(255,255,255,0.18);
+    background:rgba(255,255,255,0.04); color:#cfe3e6;
+    transition:background 0.15s, border-color 0.15s;
+  }
+  .host-bar button:hover{background:rgba(255,255,255,0.1); border-color:var(--teal);}
+  .host-bar button.primary{background:var(--gold); color:var(--navy); border-color:var(--gold); font-weight:700;}
+  .host-bar button.primary:hover{background:#e8aa2e;}
+  .host-bar .hb-hint{font-family:var(--mono); font-size:11px; color:var(--slate);}
+  .host-bar .hb-exit{font-size:11px; color:var(--slate); background:none; border:none; text-decoration:underline; padding:4px;}
+
+  .intermission{
+    text-align:center;
+  }
+  .intermission h2{
+    font-family:var(--display); font-size:clamp(30px,5vw,48px); margin:0 0 10px; font-weight:700;
+  }
+  .intermission p{color:var(--slate); font-size:15px;}
+
+  @media (max-width:640px){
+    .setup-main{padding:22px 16px 90px;}
+    .award-card{flex-direction:column; gap:10px;}
+    .drag-handle{display:none;}
+    .host-bar{padding:12px 16px;}
+    .host-bar .hb-hint{display:none;}
+  }
+</style>
+</head>
+<body>
+<a href="#main-content" class="skip-link">Skip to content</a>
+
+<!-- ================= SETUP MODE ================= -->
+<div class="mode active" id="mode-setup">
+  <header class="setup-topbar">
+    <div class="setup-brand">
+      <span class="mark">★</span>
+      <div>
+        <h1>Awards Night Builder</h1>
+        <div class="sub">Setup &amp; rehearsal — only you see this</div>
+      </div>
+    </div>
+    <button class="btn btn-gold" id="goPresentBtn">Start Presentation →</button>
+  </header>
+
+  <main class="setup-main" id="main-content">
+    <div class="setup-head">
+      <h2>Build the ceremony</h2>
+      <p>Fill in every award now. At the banquet, click "Start Presentation" and reveal them one at a time — nobody in the room sees this screen.</p>
+    </div>
+
+    <div class="event-title-field">
+      <label for="eventTitleInput">Program title (shown at the top during the show)</label>
+      <input type="text" id="eventTitleInput" placeholder="e.g. 2026 Season Awards Banquet" value="Season Awards Banquet">
+    </div>
+
+    <div id="awardsList"></div>
+
+    <div class="add-award-bar">
+      <button class="btn btn-ghost" id="addAwardBtn">+ Add an Award</button>
+    </div>
+
+    <div class="setup-actions">
+      <div class="setup-actions-inner">
+        <span class="count"><strong id="awardCount">0</strong> awards in the show</span>
+        <div class="btn-row">
+          <button class="btn btn-ghost" id="shuffleBtn">Shuffle Order</button>
+          <button class="btn btn-gold" id="goPresentBtn2">Start Presentation →</button>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- ================= PRESENTATION MODE ================= -->
+<div class="mode" id="mode-present">
+  <div class="confetti-layer" id="confettiLayer"></div>
+
+  <div class="program-title" id="presProgramTitle">Season Awards Banquet</div>
+  <div class="stage-progress" id="presProgress"></div>
+
+  <div class="stage">
+
+    <!-- Intermission / start screen -->
+    <div class="intermission" id="introScreen">
+      <h2 id="introTitle">Season Awards Banquet</h2>
+      <p>Press <strong>Next</strong> to begin.</p>
+    </div>
+
+    <!-- Reveal screen -->
+    <div class="reveal-zone" id="revealScreen" style="display:none;">
+      <p class="category-label" id="categoryLabel">Award</p>
+      <h2 class="category-title" id="categoryTitle">Category Name</h2>
+      <p class="category-desc" id="categoryDesc"></p>
+      <div class="winner-zone">
+        <p class="winner-prompt" id="winnerPrompt">— click next to reveal the winner —</p>
+        <h1 class="winner-name" id="winnerName" style="display:none;"></h1>
+        <p class="winner-note" id="winnerNote"></p>
+      </div>
+    </div>
+
+    <!-- End screen -->
+    <div class="intermission" id="endScreen" style="display:none;">
+      <h2>That's a wrap! 🎉</h2>
+      <p>Congratulations to every award winner this season.</p>
+    </div>
+
+  </div>
+
+  <div class="host-bar">
+    <div class="hb-left">
+      <button id="prevBtn">← Prev</button>
+      <button id="nextBtn" class="primary">Next →</button>
+    </div>
+    <span class="hb-hint">Space / → = next · ← = prev · only you can see this control bar's actions in advance</span>
+    <button class="hb-exit" id="exitPresentBtn">Exit to setup</button>
+  </div>
+</div>
+
+<div class="saved-toast" id="savedToast"></div>
+
+<script>
+/* =====================================================================
+   STORAGE
+   Personal (not shared) — this is a single host's private builder tool.
+   ===================================================================== */
+const STORE_KEY = "awards-night-program";
+
+async function loadProgram(){
+  try{
+    const r = await window.storage.get(STORE_KEY, false);
+    return r ? JSON.parse(r.value) : null;
+  }catch(e){ return null; }
+}
+async function saveProgram(program){
+  try{
+    await window.storage.set(STORE_KEY, JSON.stringify(program), false);
+  }catch(e){ console.error("Save failed", e); }
+}
+
+function defaultAwards(){
+  return [
+    { id: uid(), category: "Funniest Teammate", winner: "", note: "" },
+    { id: uid(), category: "Most Improved", winner: "", note: "" },
+    { id: uid(), category: "Best Attitude", winner: "", note: "" },
+    { id: uid(), category: "Iron Will Award", winner: "", note: "" },
+    { id: uid(), category: "Rookie of the Year", winner: "", note: "" },
+  ];
+}
+function uid(){ return "a_" + Date.now() + "_" + Math.random().toString(36).slice(2,8); }
+
+let program = { title: "Season Awards Banquet", awards: [] };
+
+(async function init(){
+  const loaded = await loadProgram();
+  if(loaded && loaded.awards && loaded.awards.length){
+    program = loaded;
+  } else {
+    program.awards = defaultAwards();
+  }
+  document.getElementById("eventTitleInput").value = program.title || "Season Awards Banquet";
+  renderAwardsList();
+  bindSetupEvents();
+  bindPresentationEvents();
+})();
+
+function showToast(msg){
+  const t = document.getElementById("savedToast");
+  t.textContent = msg;
+  t.classList.add("show");
+  setTimeout(()=>t.classList.remove("show"), 1600);
+}
+
+let saveTimer = null;
+function queueSave(){
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(async ()=>{
+    await saveProgram(program);
+    showToast("Saved");
+  }, 500);
+}
+
+/* =====================================================================
+   SETUP MODE
+   ===================================================================== */
+function renderAwardsList(){
+  const wrap = document.getElementById("awardsList");
+  document.getElementById("awardCount").textContent = program.awards.length;
+
+  if(program.awards.length === 0){
+    wrap.innerHTML = `<p style="text-align:center; color:var(--slate-dark); padding:30px 0;">No awards yet — add your first one below.</p>`;
+    return;
+  }
+
+  wrap.innerHTML = program.awards.map((a, idx)=>`
+    <div class="award-card" draggable="true" data-id="${a.id}" data-idx="${idx}">
+      <span class="drag-handle" title="Drag to reorder">⠿</span>
+      <div class="fields">
+        <div class="field-row">
+          <div class="field">
+            <label>Award category</label>
+            <input type="text" data-field="category" data-id="${a.id}" value="${escapeAttr(a.category)}" placeholder="e.g. Funniest Teammate">
+          </div>
+          <div class="field">
+            <label>Winner</label>
+            <input type="text" data-field="winner" data-id="${a.id}" value="${escapeAttr(a.winner)}" placeholder="Swimmer's name">
+          </div>
+        </div>
+        <div class="field">
+          <label>Note (optional — read aloud or shown under the winner's name)</label>
+          <textarea data-field="note" data-id="${a.id}" placeholder="A line about why they won this...">${escapeAttr(a.note)}</textarea>
+        </div>
+      </div>
+      <button class="remove-btn" data-remove="${a.id}" title="Remove this award" aria-label="Remove this award">&times;</button>
+    </div>
+  `).join("");
+
+  // input bindings
+  wrap.querySelectorAll("input[data-field], textarea[data-field]").forEach(el=>{
+    el.addEventListener("input", ()=>{
+      const id = el.dataset.id;
+      const field = el.dataset.field;
+      const award = program.awards.find(a=>a.id===id);
+      if(award){ award[field] = el.value; queueSave(); }
+    });
+  });
+
+  wrap.querySelectorAll("[data-remove]").forEach(btn=>{
+    btn.addEventListener("click", ()=>{
+      const id = btn.dataset.remove;
+      program.awards = program.awards.filter(a=>a.id!==id);
+      renderAwardsList();
+      queueSave();
+    });
+  });
+
+  // drag to reorder
+  let dragSrcIdx = null;
+  wrap.querySelectorAll(".award-card").forEach(card=>{
+    card.addEventListener("dragstart", (e)=>{
+      dragSrcIdx = parseInt(card.dataset.idx, 10);
+      card.classList.add("dragging");
+      e.dataTransfer.effectAllowed = "move";
+    });
+    card.addEventListener("dragend", ()=>{ card.classList.remove("dragging"); });
+    card.addEventListener("dragover", (e)=>{ e.preventDefault(); });
+    card.addEventListener("drop", (e)=>{
+      e.preventDefault();
+      const targetIdx = parseInt(card.dataset.idx, 10);
+      if(dragSrcIdx === null || dragSrcIdx === targetIdx) return;
+      const moved = program.awards.splice(dragSrcIdx, 1)[0];
+      program.awards.splice(targetIdx, 0, moved);
+      renderAwardsList();
+      queueSave();
+    });
+  });
+}
+
+function escapeAttr(str){
+  return (str || "").replace(/&/g,"&amp;").replace(/"/g,"&quot;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+}
+
+function bindSetupEvents(){
+  document.getElementById("eventTitleInput").addEventListener("input", (e)=>{
+    program.title = e.target.value;
+    queueSave();
+  });
+
+  document.getElementById("addAwardBtn").addEventListener("click", ()=>{
+    program.awards.push({ id: uid(), category: "", winner: "", note: "" });
+    renderAwardsList();
+    queueSave();
+    const inputs = document.querySelectorAll('#awardsList input[data-field="category"]');
+    if(inputs.length) inputs[inputs.length-1].focus();
+  });
+
+  document.getElementById("shuffleBtn").addEventListener("click", ()=>{
+    if(program.awards.length < 2) return;
+    for(let i = program.awards.length - 1; i > 0; i--){
+      const j = Math.floor(Math.random() * (i+1));
+      [program.awards[i], program.awards[j]] = [program.awards[j], program.awards[i]];
+    }
+    renderAwardsList();
+    queueSave();
+    showToast("Order shuffled");
+  });
+
+  document.getElementById("goPresentBtn").addEventListener("click", enterPresentMode);
+  document.getElementById("goPresentBtn2").addEventListener("click", enterPresentMode);
+}
+
+function enterPresentMode(){
+  const usable = program.awards.filter(a => a.category.trim());
+  if(usable.length === 0){
+    alert("Add at least one award with a category name before starting the presentation.");
+    return;
+  }
+  document.getElementById("mode-setup").classList.remove("active");
+  document.getElementById("mode-present").classList.add("active");
+  document.getElementById("presProgramTitle").textContent = program.title || "Season Awards Banquet";
+  document.getElementById("introTitle").textContent = program.title || "Season Awards Banquet";
+  presIndex = -1; // -1 = intro screen
+  presStage = "category"; // category | winner
+  showIntro();
+}
+
+/* =====================================================================
+   PRESENTATION MODE
+   ===================================================================== */
+let presIndex = -1;
+let presStage = "category";
+
+function presentableAwards(){
+  return program.awards.filter(a => a.category.trim());
+}
+
+function bindPresentationEvents(){
+  document.getElementById("nextBtn").addEventListener("click", presNext);
+  document.getElementById("prevBtn").addEventListener("click", presPrev);
+  document.getElementById("exitPresentBtn").addEventListener("click", ()=>{
+    if(!confirm("Exit back to setup? This stops the presentation.")) return;
+    document.getElementById("mode-present").classList.remove("active");
+    document.getElementById("mode-setup").classList.add("active");
+  });
+
+  document.addEventListener("keydown", (e)=>{
+    if(!document.getElementById("mode-present").classList.contains("active")) return;
+    if(e.key === "ArrowRight" || e.key === " "){ e.preventDefault(); presNext(); }
+    if(e.key === "ArrowLeft"){ e.preventDefault(); presPrev(); }
+  });
+}
+
+function showIntro(){
+  document.getElementById("introScreen").style.display = "block";
+  document.getElementById("revealScreen").style.display = "none";
+  document.getElementById("endScreen").style.display = "none";
+  document.getElementById("presProgress").textContent = "";
+}
+
+function showEnd(){
+  document.getElementById("introScreen").style.display = "none";
+  document.getElementById("revealScreen").style.display = "none";
+  document.getElementById("endScreen").style.display = "block";
+  document.getElementById("presProgress").textContent = "";
+}
+
+function presNext(){
+  const list = presentableAwards();
+  if(presIndex === -1){
+    // move from intro to first award, category stage
+    presIndex = 0;
+    presStage = "category";
+    renderRevealStage(list);
+    return;
+  }
+  if(presIndex >= list.length){
+    return; // already at end
+  }
+  if(presStage === "category"){
+    presStage = "winner";
+    renderRevealStage(list);
+    return;
+  }
+  // currently on winner stage -> advance to next award
+  presIndex++;
+  presStage = "category";
+  if(presIndex >= list.length){
+    showEnd();
+    return;
+  }
+  renderRevealStage(list);
+}
+
+function presPrev(){
+  const list = presentableAwards();
+  if(presIndex === -1) return;
+  if(presStage === "winner"){
+    presStage = "category";
+    renderRevealStage(list);
+    return;
+  }
+  // on category stage -> go back to previous award's winner stage, or intro
+  presIndex--;
+  if(presIndex < 0){
+    presIndex = -1;
+    showIntro();
+    return;
+  }
+  presStage = "winner";
+  renderRevealStage(list);
+}
+
+function renderRevealStage(list){
+  document.getElementById("introScreen").style.display = "none";
+  document.getElementById("endScreen").style.display = "none";
+  document.getElementById("revealScreen").style.display = "block";
+
+  const award = list[presIndex];
+  document.getElementById("presProgress").textContent = `Award ${presIndex + 1} of ${list.length}`;
+
+  const catLabel = document.getElementById("categoryLabel");
+  const catTitle = document.getElementById("categoryTitle");
+  const catDesc = document.getElementById("categoryDesc");
+  const winnerPrompt = document.getElementById("winnerPrompt");
+  const winnerName = document.getElementById("winnerName");
+  const winnerNote = document.getElementById("winnerNote");
+
+  // reset animation classes
+  [catLabel, catTitle, catDesc].forEach(el=>el.classList.remove("in"));
+  winnerName.classList.remove("in");
+  winnerNote.classList.remove("in");
+  winnerName.style.display = "none";
+  winnerNote.textContent = "";
+
+  catLabel.textContent = `Award ${presIndex + 1}`;
+  catTitle.textContent = award.category;
+  catDesc.textContent = "";
+
+  requestAnimationFrame(()=>{
+    setTimeout(()=>catLabel.classList.add("in"), 30);
+    setTimeout(()=>catTitle.classList.add("in"), 140);
+  });
+
+  if(presStage === "category"){
+    winnerPrompt.style.display = "block";
+    winnerPrompt.textContent = "— click next to reveal the winner —";
+  } else {
+    winnerPrompt.style.display = "none";
+    winnerName.textContent = award.winner || "(no winner entered)";
+    winnerName.style.display = "block";
+    winnerNote.textContent = award.note || "";
+    setTimeout(()=>{
+      winnerName.classList.add("in");
+      fireConfetti();
+    }, 80);
+    setTimeout(()=>winnerNote.classList.add("in"), 320);
+  }
+}
+
+/* =====================================================================
+   CONFETTI BURST
+   ===================================================================== */
+function fireConfetti(){
+  const layer = document.getElementById("confettiLayer");
+  const colors = ["#f4b942","#00a8a8","#ffffff","#ff8a5c"];
+  const count = 60;
+  for(let i=0;i<count;i++){
+    const el = document.createElement("div");
+    el.className = "confetto";
+    const size = 6 + Math.random()*7;
+    el.style.width = size + "px";
+    el.style.height = (size * (0.4 + Math.random()*0.6)) + "px";
+    el.style.background = colors[Math.floor(Math.random()*colors.length)];
+    el.style.left = (Math.random()*100) + "%";
+    const duration = 1.6 + Math.random()*1.4;
+    const delay = Math.random()*0.25;
+    const rotate = (Math.random()*720 - 360);
+    el.style.animation = `confetti-fall ${duration}s cubic-bezier(.25,.46,.45,.94) ${delay}s forwards`;
+    el.style.setProperty("--rot", rotate + "deg");
+    layer.appendChild(el);
+    setTimeout(()=>el.remove(), (duration+delay)*1000 + 200);
+  }
+}
+
+// keyframes injected via JS (keeps single-file structure simple)
+const styleEl = document.createElement("style");
+styleEl.textContent = `
+@keyframes confetti-fall{
+  0%{ transform:translateY(-20px) rotate(0deg); opacity:1; }
+  100%{ transform:translateY(110vh) rotate(var(--rot)); opacity:0.9; }
+}`;
+document.head.appendChild(styleEl);
+</script>
+</body>
+</html>
